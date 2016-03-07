@@ -25,27 +25,32 @@ module Azr.Experiments.Workflow where
 --
 --
 
-data Job a = Job a deriving (Eq,Show)
+data Job a = Job a | Blocked deriving (Eq,Show)
 
-data Task a = Task a deriving (Eq,Show)
+data Task a = Completed a | Dispatched deriving (Eq,Show)
 
 dispatch :: String -> Integer -> Job (Task Integer)
-dispatch "double" x = Job . Task $ 2 * x
-dispatch "triple" x = Job . Task $ 3 * x
-dispatch "square" x = Job . Task $ x * x
+dispatch "double" x = Job . Completed $ 2 * x
+dispatch "triple" x = Job . Completed $ 3 * x
+dispatch "square" x = Job . Completed $ x * x
 dispatch _ _ = error "no such dispatch"
 
 require :: Task a -> Job a
-require (Task a) = Job a
+require (Completed a) = Job a
+require Dispatched = Blocked
 
 instance Functor Job where
+  fmap _ Blocked = Blocked
   fmap f (Job x) = Job (f x)
 
 instance Applicative Job where
   pure = Job
+  Blocked <*> _ = Blocked
+  _ <*> Blocked = Blocked
   Job f <*> Job x = Job (f x)
 
 instance Monad Job where
+  Blocked >>= _ = Blocked
   Job x >>= f = f x
 
 job :: Integer -> Job Integer
