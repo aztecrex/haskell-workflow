@@ -16,11 +16,15 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:
-    Azr.Experiments.Workflow
+    Azr.Experiments.Workflow,
+    Azr.Experiments.WorkflowOperational,
+    Azr.Experiments.WorkflowFree
   other-modules:
   build-depends:
     base >= 4.7 && < 5,
-    mtl
+    mtl,
+    operational,
+    free
   default-language:    Haskell2010
 
 test-suite workflow-test
