@@ -16,6 +16,11 @@ dispatch t a = singleton  (Dispatch t a)
 require :: Maybe r -> Work t a r
 require = singleton . Require
 
+data Task a = Completed a | Dispatched String a deriving (Eq,Show)
+type Status = (Int, [Task Integer])
+
+interpret :: Status -> Work -> 
+
 -- type Job s a = Program (WorkI s) a
 
 -- progress :: Job a ->  Maybe a
